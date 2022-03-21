@@ -16,4 +16,116 @@
     <maven.compiler.target>11</maven.compiler.target>
   </properties>
 
+  <dependencies>
+    <dependency>
+      <groupId>io.springfox</groupId>
+      <artifactId>springfox-boot-starter</artifactId>
+      <version>3.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.swagger.parser.v3</groupId>
+      <artifactId>swagger-parser-v3</artifactId>
+      <version>2.0.30</version>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-validator</artifactId>
+      <version>6.2.2.Final</version>
+    </dependency>
+    <dependency>
+      <groupId>org.openapitools</groupId>
+      <artifactId>jackson-databind-nullable</artifactId>
+      <version>0.2.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.openapitools</groupId>
+      <artifactId>openapi-generator</artifactId>
+      <version>5.2.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+    <finalName>${project.artifactId}-${project.version}</finalName>
+    <plugins>
+      <!-- Sort by groupId and artifactId (alphabetical) -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>unpack</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>unpack-dependencies</goal>
+            </goals>
+            <configuration>
+              <includeGroupIds>io.virtualcave.ratesservice</includeGroupIds>
+              <includeArtifactIds>rates-service-app-api-rest</includeArtifactIds>
+              <includes>**\/*.yaml, **\/*.yml</includes>
+              <outputDirectory>${project.basedir}/src/main/resources</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.openapitools</groupId>
+        <artifactId>openapi-generator-maven-plugin</artifactId>
+        <version>5.2.1</version>
+
+        <configuration>
+          <generatorName>spring</generatorName>
+          <supportingFilesToGenerate>
+            ApiUtil.java
+          </supportingFilesToGenerate>
+          <configOptions>
+            <interfaceOnly>true</interfaceOnly>
+            <delegatePattern>true</delegatePattern>
+            <sourceFolder>src/main/java</sourceFolder>
+            <reactive>false</reactive>
+            <serializableModel>true</serializableModel>
+            <generateModelTests>true</generateModelTests>
+            <generateApiTests>true</generateApiTests>
+            <useBeanValidation>true</useBeanValidation>
+            <performBeanValidation>true</performBeanValidation>
+            <additionalProperties>
+              <additionalProperty>modelNamePrefix=Dto</additionalProperty>
+            </additionalProperties>
+            <useTags>true</useTags>
+          </configOptions>
+        </configuration>
+
+        <executions>
+          <execution>
+            <id>generate-rest-api-v1</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+              <inputSpec>${project.basedir}/src/main/resources/rates-service-openapi.yaml</inputSpec>
+              <configOptions>
+                <apiPackage>${project.groupId}.api.rest.controllers.v1</apiPackage>
+                <modelPackage>${project.groupId}.api.rest.dtos.v1</modelPackage>
+                <invokerPackage>${project.groupId}.api.rest.invokers.v1</invokerPackage>
+              </configOptions>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
 </project>
