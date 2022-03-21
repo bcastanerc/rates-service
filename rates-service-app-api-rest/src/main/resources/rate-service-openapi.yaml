@@ -1,0 +1,130 @@
+openapi: 3.0.3
+info:
+  title: Rates service API
+  description: Rates service public API
+  termsOfService: none
+  contact:
+    email: admin@virtualcave.io
+  license:
+    name: Virtualcave
+    url: https://virtualcave.io
+  version: "1.0-SNAPSHOT"
+servers:
+- url: https://bff-contracts-service.stage.phonehouse.es/contracts
+  description: Endpoint stage environment
+tags:
+- name: rates
+  description: Available operations for rates service.
+paths:
+  /v1/rates:
+    post:
+      tags:
+      - rates
+      summary: Create a new Rate
+      operationId: addRate
+      requestBody:
+        description: Use the required fields to create a new rate.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Rate'
+        required: true
+      responses:
+        200:
+          description: Created rate
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rate'
+        409:
+          description: Successful operation
+          content: {}
+        422:
+          $ref: '#/components/responses/UnprocessableEntityError'
+        503:
+          $ref: '#/components/responses/ServiceUnavailableError'
+      x-codegen-request-body-name: body
+components:
+  headers:
+    xTotalItems:
+      description: Total number of items in resultset
+      schema:
+        type: integer
+        example: 10
+    xTotalPages:
+      description: Total number of pages in resultset
+      schema:
+        type: integer
+        example: 1
+  schemas:
+    Rate:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The rate request identifier
+          example: "124"
+        brandId:
+          type: string
+          description: The brand identifier
+          example: "23"
+        productId:
+          type: string
+          description: The product identifier
+          example: "30"
+        createdAt:
+          type: string
+          format: date-time
+          description: The contract request creation timestamp
+          example: "2017-07-21T17:32:28Z"
+        amount:
+          $ref: '#/components/schemas/Amount'
+    Amount:
+      type: object
+      properties:
+        value:
+          type: integer
+          description: Monetary value
+          example: 1704
+        currency:
+          type: string
+          description: ISO 4217 currency CODE
+          default: EUR
+          example: EUR
+        exponent:
+          type: integer
+          description: Decimal index (value / 10^exponent)
+          default: 0
+          example: 3
+  responses:
+    UnauthorizedError:
+      description: Authentication is required to get the requested response
+      content:
+        application/json:
+          schema: {}
+    ForbiddenError:
+      description: The client does not have the necessary permissions for certain content, so the server is refusing to grant an appropriate response
+      content:
+        application/json:
+          schema: {}
+    NotFoundError:
+      description: Resource not found
+      content:
+        application/json:
+          schema: {}
+    ConflictError:
+      description: Request conflict with current state of the target resource
+      content:
+        application/json:
+          schema: {}
+    UnprocessableEntityError:
+      description: Invalid input
+      content:
+        application/json:
+          schema: {}
+    ServiceUnavailableError:
+      description: Rates service unavailable
+      content:
+        application/json:
+          schema: {}
+  
