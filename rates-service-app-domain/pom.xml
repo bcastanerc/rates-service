@@ -3,9 +3,11 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
-    <artifactId>rates-service</artifactId>
+    <artifactId>rates-service-app</artifactId>
     <groupId>io.virtualcave</groupId>
     <version>0.0.1-SNAPSHOT</version>
+    <relativePath>..</relativePath>
+
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
@@ -15,5 +17,13 @@
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
   </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>commons-validator</groupId>
+      <artifactId>commons-validator</artifactId>
+      <version>1.6</version>
+    </dependency>
+  </dependencies>
 
 </project>
