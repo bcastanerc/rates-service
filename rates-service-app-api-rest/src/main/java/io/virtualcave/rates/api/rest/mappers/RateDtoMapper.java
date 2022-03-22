@@ -17,8 +17,8 @@ public interface RateDtoMapper {
 
   RateDtoMapper INSTANCE = Mappers.getMapper(RateDtoMapper.class);
 
-  Rate rateDtoToRate(RateDto rateDto);
+  Rate asRate(RateDto rateDto);
 
-  RateDto rateToRateDto(Rate rate);
+  RateDto asRateDto(Rate rate);
 }
 

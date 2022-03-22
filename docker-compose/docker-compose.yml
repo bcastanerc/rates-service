@@ -1,13 +1,13 @@
 version: '3.3'
 services:
-  dbRates:
+  rates-postgres:
     image: postgres
     restart: always
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: ratesdb
+    - POSTGRES_USER=user
+    - POSTGRES_PASSWORD=password
+    - POSTGRES_DB=ratesservicedb_lite
     ports:
-    - "5432:5432"
+    - 5432:5432
     volumes:
     - ./postgreSQL/init-db.sql:/docker-entrypoint-initdb.d/init.sql
