@@ -3,9 +3,10 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
-    <artifactId>rates-service</artifactId>
+    <artifactId>rates-service-app</artifactId>
     <groupId>io.virtualcave</groupId>
     <version>0.0.1-SNAPSHOT</version>
+    <relativePath>..</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
@@ -17,6 +18,16 @@
   </properties>
 
   <dependencies>
+    <dependency>
+      <groupId>${project.parent.groupId}</groupId>
+      <artifactId>rates-service-app-domain</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.parent.groupId}</groupId>
+      <artifactId>rates-service-app-application</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+    </dependency>
     <dependency>
       <groupId>io.springfox</groupId>
       <artifactId>springfox-boot-starter</artifactId>
@@ -30,7 +41,7 @@
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-validator</artifactId>
-      <version>6.2.2.Final</version>
+      <version>${hibernate-validator.version}</version>
     </dependency>
     <dependency>
       <groupId>org.openapitools</groupId>
@@ -46,6 +57,11 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.mapstruct</groupId>
+      <artifactId>mapstruct</artifactId>
+      <version>1.4.2.Final</version>
+    </dependency>
 
   </dependencies>
 
@@ -53,25 +69,6 @@
     <finalName>${project.artifactId}-${project.version}</finalName>
     <plugins>
       <!-- Sort by groupId and artifactId (alphabetical) -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>unpack</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>unpack-dependencies</goal>
-            </goals>
-            <configuration>
-              <includeGroupIds>io.virtualcave.ratesservice</includeGroupIds>
-              <includeArtifactIds>rates-service-app-api-rest</includeArtifactIds>
-              <includes>**\/*.yaml, **\/*.yml</includes>
-              <outputDirectory>${project.basedir}/src/main/resources</outputDirectory>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
@@ -84,39 +81,38 @@
         <groupId>org.openapitools</groupId>
         <artifactId>openapi-generator-maven-plugin</artifactId>
         <version>5.2.1</version>
-
         <configuration>
           <generatorName>spring</generatorName>
+          <skip>false</skip>
           <supportingFilesToGenerate>
             ApiUtil.java
           </supportingFilesToGenerate>
           <configOptions>
             <interfaceOnly>true</interfaceOnly>
             <delegatePattern>true</delegatePattern>
-            <sourceFolder>src/main/java</sourceFolder>
-            <reactive>false</reactive>
+            <reactive>true</reactive>
             <serializableModel>true</serializableModel>
             <generateModelTests>true</generateModelTests>
             <generateApiTests>true</generateApiTests>
             <useBeanValidation>true</useBeanValidation>
             <performBeanValidation>true</performBeanValidation>
-            <additionalProperties>
-              <additionalProperty>modelNamePrefix=Dto</additionalProperty>
-            </additionalProperties>
+
             <useTags>true</useTags>
           </configOptions>
         </configuration>
 
         <executions>
           <execution>
-            <id>generate-rest-api-v1</id>
+            <id>generate-bff-contracts-api-rest-objects</id>
             <phase>generate-sources</phase>
             <goals>
               <goal>generate</goal>
             </goals>
             <configuration>
               <inputSpec>${project.basedir}/src/main/resources/rates-service-openapi.yaml</inputSpec>
+              <skip>false</skip>
               <configOptions>
+                <sourceFolder>bff-contracts-api-rest</sourceFolder>
                 <apiPackage>${project.groupId}.api.rest.controllers.v1</apiPackage>
                 <modelPackage>${project.groupId}.api.rest.dtos.v1</modelPackage>
                 <invokerPackage>${project.groupId}.api.rest.invokers.v1</invokerPackage>

@@ -36,9 +36,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Rate'
-        409:
-          description: Successful operation
-          content: {}
         422:
           $ref: '#/components/responses/UnprocessableEntityError'
         503:
@@ -59,6 +56,10 @@ components:
   schemas:
     Rate:
       type: object
+      required:
+      - id
+      - brandId
+      - productId
       properties:
         id:
           type: integer
@@ -104,27 +105,11 @@ components:
           schema: {}
     ForbiddenError:
       description: The client does not have the necessary permissions for certain content, so the server is refusing to grant an appropriate response
-      content:
-        application/json:
-          schema: {}
     NotFoundError:
       description: Resource not found
-      content:
-        application/json:
-          schema: {}
     ConflictError:
       description: Request conflict with current state of the target resource
-      content:
-        application/json:
-          schema: {}
     UnprocessableEntityError:
       description: Invalid input
-      content:
-        application/json:
-          schema: {}
     ServiceUnavailableError:
       description: Rates service unavailable
-      content:
-        application/json:
-          schema: {}
-  
