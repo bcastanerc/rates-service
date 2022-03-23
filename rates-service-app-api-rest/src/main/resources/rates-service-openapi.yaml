@@ -41,6 +41,84 @@ paths:
         503:
           $ref: '#/components/responses/ServiceUnavailableError'
       x-codegen-request-body-name: body
+  /v1/rates/{id}:
+    get:
+      tags:
+      - rates
+      summary: Get a specific rate
+      description: Get the rate by the id rate
+      operationId: findRateById
+      parameters:
+      - name: id
+        in: path
+        description: Rate Id
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: Succesful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rate'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+    put:
+      tags:
+      - rates
+      summary: Updated price rate
+      description: Update the price rate given a id rate
+      operationId: updateRateById
+      parameters:
+      - name: id
+        in: path
+        description: Rate Id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Updated Rate object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Rate'
+        required: true
+      responses:
+        200:
+          description: Rate successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rate'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+      x-codegen-request-body-name: body
+    delete:
+      tags:
+      - rates
+      summary: Delete a rate
+      description: Delete a rate given a id rate
+      operationId: deleteById
+      parameters:
+      - name: id
+        in: path
+        description: Rate Id
+        required: true
+        schema:
+          type: string
+      responses:
+        204:
+          description: Succesful Operation
+          content: {}
+        400:
+          $ref: '#/components/responses/BadRequest'
+        404:
+          $ref: '#/components/responses/NotFoundError'
 components:
   headers:
     xTotalItems:
@@ -98,11 +176,10 @@ components:
           default: 0
           example: 3
   responses:
+    BadRequest:
+      description: Malformed request or invalid type send
     UnauthorizedError:
       description: Authentication is required to get the requested response
-      content:
-        application/json:
-          schema: {}
     ForbiddenError:
       description: The client does not have the necessary permissions for certain content, so the server is refusing to grant an appropriate response
     NotFoundError:
