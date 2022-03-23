@@ -2,6 +2,10 @@ package io.virtualcave.rates.api.rest.controllers;
 
 import io.virtualcave.api.rest.controllers.v1.RatesApi;
 import io.virtualcave.api.rest.dtos.v1.RateDto;
+import io.virtualcave.rates.api.rest.mappers.RateDtoMapper;
+import io.virtualcave.rates.application.commands.AddRateCommandHandler;
+import io.virtualcave.rates.model.Rate;
+import java.time.OffsetDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -23,8 +27,29 @@ import reactor.core.publisher.Mono;
     })
 public class RateController implements RatesApi {
 
+    private final AddRateCommandHandler addRateCommandHandler;
+
+    private final RateDtoMapper rateDtoMapper;
+
     @Override
     public Mono<ResponseEntity<RateDto>> addRate(Mono<RateDto> rateDto, ServerWebExchange exchange) {
+        return addRateCommandHandler.executeAndReturn(rateDto.map(rateDtoMapper::asRate))
+            .map(rateDtoMapper::asRateDto)
+            .map(ResponseEntity::ok);
+    }
+
+    @Override
+    public Mono<ResponseEntity<RateDto>> findRateById(String id, ServerWebExchange exchange) {
+        return Mono.empty();
+    }
+
+    @Override
+    public Mono<ResponseEntity<RateDto>> updateRateById(String id, Mono<RateDto> body, ServerWebExchange exchange) {
+        return Mono.empty();
+    }
+
+    @Override
+    public Mono<ResponseEntity<Void>> deleteById(String id, ServerWebExchange exchange) {
         return Mono.empty();
     }
 
