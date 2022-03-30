@@ -13,8 +13,8 @@
   <artifactId>rates-service-app-api-rest</artifactId>
 
   <properties>
-    <maven.compiler.source>11</maven.compiler.source>
-    <maven.compiler.target>11</maven.compiler.target>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
   </properties>
 
   <dependencies>
@@ -58,11 +58,12 @@
       <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.mapstruct</groupId>
-      <artifactId>mapstruct</artifactId>
-      <version>1.4.2.Final</version>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>rates-service-app-domain</artifactId>
+      <version>${project.version}</version>
+      <type>test-jar</type>
+      <scope>test</scope>
     </dependency>
-
   </dependencies>
 
   <build>
@@ -96,11 +97,9 @@
             <generateApiTests>true</generateApiTests>
             <useBeanValidation>true</useBeanValidation>
             <performBeanValidation>true</performBeanValidation>
-
             <useTags>true</useTags>
           </configOptions>
         </configuration>
-
         <executions>
           <execution>
             <id>generate-bff-contracts-api-rest-objects</id>
@@ -112,7 +111,6 @@
               <inputSpec>${project.basedir}/src/main/resources/rates-service-openapi.yaml</inputSpec>
               <skip>false</skip>
               <configOptions>
-                <sourceFolder>bff-contracts-api-rest</sourceFolder>
                 <apiPackage>${project.groupId}.api.rest.controllers.v1</apiPackage>
                 <modelPackage>${project.groupId}.api.rest.dtos.v1</modelPackage>
                 <invokerPackage>${project.groupId}.api.rest.invokers.v1</invokerPackage>
