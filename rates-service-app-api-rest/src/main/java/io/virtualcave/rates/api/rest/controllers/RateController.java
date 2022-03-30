@@ -2,10 +2,11 @@ package io.virtualcave.rates.api.rest.controllers;
 
 import io.virtualcave.api.rest.controllers.v1.RatesApi;
 import io.virtualcave.api.rest.dtos.v1.RateDto;
+import io.virtualcave.api.rest.dtos.v1.RateRequestDto;
 import io.virtualcave.rates.api.rest.mappers.RateDtoMapper;
+import io.virtualcave.rates.api.rest.mappers.RateRequestDtoMapper;
 import io.virtualcave.rates.application.commands.AddRateCommandHandler;
-import io.virtualcave.rates.model.Rate;
-import java.time.OffsetDateTime;
+import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Slf4j
@@ -31,9 +33,12 @@ public class RateController implements RatesApi {
 
     private final RateDtoMapper rateDtoMapper;
 
+    private final RateRequestDtoMapper rateRequestDtoMapper;
+
     @Override
-    public Mono<ResponseEntity<RateDto>> addRate(Mono<RateDto> rateDto, ServerWebExchange exchange) {
-        return addRateCommandHandler.executeAndReturn(rateDto.map(rateDtoMapper::asRate))
+    public Mono<ResponseEntity<RateDto>> addRate(Mono<RateRequestDto> rateRequestDto, ServerWebExchange exchange) {
+        return rateRequestDto.map(rateRequestDtoMapper::asRateRequest)
+            .flatMap(addRateCommandHandler::executeAndReturn)
             .map(rateDtoMapper::asRateDto)
             .map(ResponseEntity::ok);
     }
@@ -50,6 +55,12 @@ public class RateController implements RatesApi {
 
     @Override
     public Mono<ResponseEntity<Void>> deleteById(String id, ServerWebExchange exchange) {
+        return Mono.empty();
+    }
+
+    @Override
+    public Mono<ResponseEntity<Flux<RateDto>>> findRateByProductAndBrand(LocalDate startDate, String brandId, String productId,
+        ServerWebExchange exchange) {
         return Mono.empty();
     }
 
