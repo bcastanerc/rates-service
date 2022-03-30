@@ -9,9 +9,6 @@ info:
     name: Virtualcave
     url: https://virtualcave.io
   version: "1.0-SNAPSHOT"
-servers:
-- url: https://bff-contracts-service.stage.phonehouse.es/contracts
-  description: Endpoint stage environment
 tags:
 - name: rates
   description: Available operations for rates service.
@@ -27,7 +24,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Rate'
+              $ref: '#/components/schemas/RateRequest'
         required: true
       responses:
         200:
@@ -41,6 +38,48 @@ paths:
         503:
           $ref: '#/components/responses/ServiceUnavailableError'
       x-codegen-request-body-name: body
+    get:
+      tags:
+      - rates
+      summary: Find Rates given product, brand and start date
+      description: Find Rates by a start date, product's id and brand's id
+      operationId: findRateByProductAndBrand
+      parameters:
+      - in: query
+        name: startDate
+        description: The rate creation timestamp
+        required: true
+        schema:
+          type: string
+          format: date
+          example: "2022-02-21"
+      - in: query
+        name: brandId
+        description: Brand Id
+        required: true
+        schema:
+          type: string
+      - in: query
+        name: productId
+        description: Product Id
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: Succesful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Rate'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+        422:
+          $ref: '#/components/responses/UnprocessableEntityError'
   /v1/rates/{id}:
     get:
       tags:
@@ -69,8 +108,8 @@ paths:
     put:
       tags:
       - rates
-      summary: Updated price rate
-      description: Update the price rate given a id rate
+      summary: Updated rate price
+      description: Update the price of a given rate by its id
       operationId: updateRateById
       parameters:
       - name: id
@@ -132,6 +171,33 @@ components:
         type: integer
         example: 1
   schemas:
+    RateRequest:
+      type: object
+      required:
+      - brandId
+      - productId
+      properties:
+        brandId:
+          type: string
+          description: The brand identifier
+          example: "23"
+        productId:
+          type: string
+          description: The product identifier
+          example: "30"
+        endDate:
+          type: string
+          format: date
+          description: The contract request creation timestamp
+          example: "2017-07-21"
+        currencyCode:
+          type: string
+          description: The ISO 4217 code of the currency
+          example: "EUR"
+        totalAmount:
+          type: integer
+          description: the total amount non formatted with out decimals
+          example: 1704
     Rate:
       type: object
       required:
@@ -151,11 +217,16 @@ components:
           type: string
           description: The product identifier
           example: "30"
-        createdAt:
+        startDate:
           type: string
-          format: date-time
-          description: The contract request creation timestamp
-          example: "2017-07-21T17:32:28Z"
+          format: date
+          description: The rate starting date
+          example: "2017-07-21"
+        endDate:
+          type: string
+          format: date
+          description: The rate ending date
+          example: "2017-07-21"
         amount:
           $ref: '#/components/schemas/Amount'
     Amount:
@@ -163,14 +234,19 @@ components:
       properties:
         value:
           type: integer
-          description: Monetary value
+          description: Monetary value non formated
           example: 1704
-        currency:
+        code:
           type: string
           description: ISO 4217 currency CODE
           default: EUR
           example: EUR
-        exponent:
+        symbol:
+          type: string
+          description: Symbol of the selected currency
+          example: €
+          default: €
+        decimals:
           type: integer
           description: Decimal index (value / 10^exponent)
           default: 0
