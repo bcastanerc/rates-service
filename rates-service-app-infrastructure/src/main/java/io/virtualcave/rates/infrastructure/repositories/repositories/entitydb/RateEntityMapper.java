@@ -17,5 +17,7 @@ public interface RateEntityMapper {
 
   @Mapping(source = "price", target = "amount.value")
   @Mapping(source = "currencyCode", target = "amount.code")
-  Rate asRateEntityToRate(RateEntity rateEntity);
+  Rate asRateToRateEntity(RateEntity rateEntity);
+
+  RateEntity asRateToRateEntity(Rate rate);
 }

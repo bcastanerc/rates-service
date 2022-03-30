@@ -6,11 +6,13 @@ import io.virtualcave.api.rest.dtos.v1.RateRequestDto;
 import io.virtualcave.rates.api.rest.mappers.RateDtoMapper;
 import io.virtualcave.rates.api.rest.mappers.RateRequestDtoMapper;
 import io.virtualcave.rates.application.commands.AddRateCommandHandler;
+import io.virtualcave.rates.application.commands.DeleteRateCommandHandler;
 import io.virtualcave.rates.application.queries.FindRateByIdQuery;
 import io.virtualcave.rates.application.queries.FindRateByIdQueryHandler;
 import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -32,6 +34,8 @@ import reactor.core.publisher.Mono;
 public class RateController implements RatesApi {
 
     private final AddRateCommandHandler addRateCommandHandler;
+
+    private final DeleteRateCommandHandler deleteRateCommandHandler;
 
     private final FindRateByIdQueryHandler findRateByIdQueryHandler;
 
@@ -56,12 +60,14 @@ public class RateController implements RatesApi {
     }
 
     @Override
-    public Mono<ResponseEntity<RateDto>> updateRateById(String id, Mono<RateDto> body, ServerWebExchange exchange) {
-        return Mono.empty();
+    public Mono<ResponseEntity<Void>> deleteById(String id, ServerWebExchange exchange) {
+        return deleteRateCommandHandler.executeAndReturn(id)
+            .thenReturn(new ResponseEntity<Void>(HttpStatus.NO_CONTENT))
+            .defaultIfEmpty(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @Override
-    public Mono<ResponseEntity<Void>> deleteById(String id, ServerWebExchange exchange) {
+    public Mono<ResponseEntity<RateDto>> updateRateById(String id, String price, ServerWebExchange exchange) {
         return Mono.empty();
     }
 

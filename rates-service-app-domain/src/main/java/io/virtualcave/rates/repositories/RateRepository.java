@@ -12,6 +12,8 @@ public interface RateRepository {
 
   Mono<Rate> findById(String id);
 
+  Mono<Rate> patch(Rate rate);
+
   Flux<Rate> findByProductAndBrandId(String productId, String brandId, LocalDate date);
 
   Mono<Void> delete(String id);

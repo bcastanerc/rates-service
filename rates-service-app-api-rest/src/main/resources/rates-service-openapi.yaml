@@ -105,7 +105,7 @@ paths:
           $ref: '#/components/responses/BadRequest'
         404:
           $ref: '#/components/responses/NotFoundError'
-    put:
+    patch:
       tags:
       - rates
       summary: Updated rate price
@@ -118,13 +118,12 @@ paths:
         required: true
         schema:
           type: string
-      requestBody:
-        description: Updated Rate object
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Rate'
+      - name: price
+        in: query
+        description: The modified price of the rate
         required: true
+        schema:
+          type: string
       responses:
         200:
           description: Rate successfully updated.

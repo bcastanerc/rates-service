@@ -24,13 +24,19 @@ public class RateRepositoryImpl implements RateRepository {
   @Override
   public Mono<Rate> save(RateRequest rateData) {
     return rateRepositoryR2dbc.save(rateEntityMapper.asRateRequestToRateEntity(rateData))
-        .map(rateEntityMapper::asRateEntityToRate);
+        .map(rateEntityMapper::asRateToRateEntity);
   }
 
   @Override
   public Mono<Rate> findById(String id) {
     return rateRepositoryR2dbc.findById(id)
-        .map(rateEntityMapper::asRateEntityToRate);
+        .map(rateEntityMapper::asRateToRateEntity);
+  }
+
+  @Override
+  public Mono<Rate> patch(Rate rate) {
+    return rateRepositoryR2dbc.save(rateEntityMapper.asRateToRateEntity(rate))
+        .map(rateEntityMapper::asRateToRateEntity);
   }
 
   @Override
@@ -40,7 +46,7 @@ public class RateRepositoryImpl implements RateRepository {
 
   @Override
   public Mono<Void> delete(String id) {
-    return null;
+    return rateRepositoryR2dbc.deleteById(id);
   }
 
 

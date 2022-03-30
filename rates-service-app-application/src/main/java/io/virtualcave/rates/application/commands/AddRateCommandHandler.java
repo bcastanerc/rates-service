@@ -14,7 +14,7 @@ import reactor.core.publisher.Mono;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class AddRateCommandHandler implements CommandReturnHandler<RateRequest, Rate>{
+public class AddRateCommandHandler implements CommandReturnHandler<RateRequest, Mono<Rate>> {
 
   private final RateRepository rateRepository;
 
