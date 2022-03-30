@@ -22,23 +22,25 @@ public class Amount extends SelfValidator {
   private Integer value;
 
   @CurrencyIsoCode
-  private String currency;
+  private String code;
 
-  private Integer exponent = 0;
+  private String symbol;
+
+  private Integer decimals = 0;
 
   public BigDecimal toBigDecimal() {
     BigDecimal val = new BigDecimal(value);
-    return val.divide(BigDecimal.TEN.pow(exponent), exponent, RoundingMode.HALF_UP);
+    return val.divide(BigDecimal.TEN.pow(decimals), decimals, RoundingMode.HALF_UP);
   }
 
   public static Amount from(String value) {
     Amount amount = new Amount();
-    amount.setCurrency(DEFAULT_CURRENCY);
+    amount.setCode(DEFAULT_CURRENCY);
     if (value.length() > 9) {
       value = value.substring(0, 9);
     }
     amount.setValue(getInt(value));
-    amount.setExponent(calculateExponent(value));
+    amount.setDecimals(calculateExponent(value));
     return amount;
   }
 
