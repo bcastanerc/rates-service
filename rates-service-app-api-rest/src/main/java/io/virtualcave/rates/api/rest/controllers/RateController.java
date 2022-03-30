@@ -6,6 +6,8 @@ import io.virtualcave.api.rest.dtos.v1.RateRequestDto;
 import io.virtualcave.rates.api.rest.mappers.RateDtoMapper;
 import io.virtualcave.rates.api.rest.mappers.RateRequestDtoMapper;
 import io.virtualcave.rates.application.commands.AddRateCommandHandler;
+import io.virtualcave.rates.application.queries.FindRateByIdQuery;
+import io.virtualcave.rates.application.queries.FindRateByIdQueryHandler;
 import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +33,8 @@ public class RateController implements RatesApi {
 
     private final AddRateCommandHandler addRateCommandHandler;
 
+    private final FindRateByIdQueryHandler findRateByIdQueryHandler;
+
     private final RateDtoMapper rateDtoMapper;
 
     private final RateRequestDtoMapper rateRequestDtoMapper;
@@ -45,7 +49,10 @@ public class RateController implements RatesApi {
 
     @Override
     public Mono<ResponseEntity<RateDto>> findRateById(String id, ServerWebExchange exchange) {
-        return Mono.empty();
+        return findRateByIdQueryHandler.execute(FindRateByIdQuery.builder().rateId(id).build())
+            .map(rateDtoMapper::asRateDto)
+            .map(ResponseEntity::ok)
+            .defaultIfEmpty(ResponseEntity.notFound().build());
     }
 
     @Override

@@ -29,7 +29,8 @@ public class RateRepositoryImpl implements RateRepository {
 
   @Override
   public Mono<Rate> findById(String id) {
-    return null;
+    return rateRepositoryR2dbc.findById(id)
+        .map(rateEntityMapper::asRateEntityToRate);
   }
 
   @Override
