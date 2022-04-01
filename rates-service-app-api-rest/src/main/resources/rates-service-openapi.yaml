@@ -123,7 +123,7 @@ paths:
         description: The modified price of the rate
         required: true
         schema:
-          type: string
+          type: integer
       responses:
         200:
           description: Rate successfully updated.
