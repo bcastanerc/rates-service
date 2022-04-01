@@ -11,3 +11,11 @@ services:
     - 5432:5432
     volumes:
     - ./postgreSQL/init-db.sql:/docker-entrypoint-initdb.d/init.sql
+  rates-wiremock:
+    image: wiremock/wiremock:latest
+    ports:
+    - '7070:8080'
+    - '7443:8443'
+    volumes:
+    - ./wiremock/__files:/home/wiremock/__files
+    - ./wiremock/mappings:/home/wiremock/mappings

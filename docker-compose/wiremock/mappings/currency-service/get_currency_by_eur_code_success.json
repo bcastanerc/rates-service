@@ -1,0 +1,13 @@
+{
+  "request": {
+    "url": "/v1/currencies/EUR",
+    "method": "GET"
+  },
+  "response": {
+    "status": 200,
+    "bodyFileName": "currency-service/get_currency_by_eur_code.json",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}
