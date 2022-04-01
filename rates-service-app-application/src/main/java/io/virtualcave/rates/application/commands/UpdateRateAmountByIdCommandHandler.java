@@ -12,19 +12,19 @@ import reactor.core.publisher.Mono;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class PatchRateCommandHandler implements CommandReturnHandler<Rate, Mono<Rate>>{
+public class UpdateRateAmountByIdCommandHandler implements CommandReturnHandler<UpdateRateAmountCommand, Mono<Rate>>{
 
   private final RateRepository rateRepository;
 
   @Override
-  public void execute(Rate rate) {
-    this.executeAndReturn(rate);
+  public void execute(UpdateRateAmountCommand command) {
+    this.executeAndReturn(command);
   }
 
   @Override
-  public Mono<Rate> executeAndReturn(Rate rate) {
-    return rateRepository.findById(rate.getId().toString()).flatMap( rateResponse -> {
-      rateResponse.getAmount().setValue(rate.getAmount().getValue());
+  public Mono<Rate> executeAndReturn(UpdateRateAmountCommand command) {
+    return rateRepository.findById(command.getId()).flatMap( rateResponse -> {
+      rateResponse.getAmount().setValue(command.getPrice());
       return rateRepository.patch(rateResponse);
     });
   }

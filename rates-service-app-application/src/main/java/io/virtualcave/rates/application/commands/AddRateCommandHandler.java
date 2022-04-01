@@ -28,6 +28,7 @@ public class AddRateCommandHandler implements CommandReturnHandler<RateRequest, 
   @Override
   public Mono<Rate> executeAndReturn(RateRequest rate) {
     if (ObjectUtils.isEmpty(rate)) throw new RateInvalidDataException("Error in rate request, data is null.");
+
     return rateRepository.save(rate)
         .zipWith(currencyService.getAmountByCurrencyCode(rate.getCurrencyCode()), (resultRate, resultAmount) -> {
       resultRate.setAmount(resultAmount);

@@ -12,5 +12,5 @@ public class FindRatesByProductBrandIdQuery implements Query {
 
   private String productId;
 
-  private LocalDate date;
+  private LocalDate startDate;
 }

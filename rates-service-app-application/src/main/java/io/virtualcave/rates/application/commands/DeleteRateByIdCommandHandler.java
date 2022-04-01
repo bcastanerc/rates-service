@@ -11,7 +11,7 @@ import reactor.core.publisher.Mono;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class DeleteRateCommandHandler implements CommandReturnHandler<String, Mono<Void>> {
+public class DeleteRateByIdCommandHandler implements CommandReturnHandler<String, Mono<Void>> {
 
   private final RateRepository rateRepository;
 

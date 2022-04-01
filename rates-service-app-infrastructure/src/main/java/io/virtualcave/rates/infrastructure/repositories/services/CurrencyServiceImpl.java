@@ -17,15 +17,15 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class CurrencyServiceImpl implements CurrencyService {
 
-  private CurrencyMapper currencyMapper;
+  private final CurrencyMapper currencyMapper;
 
-  private CurrenciesApi currenciesApi;
+  private final CurrenciesApi currenciesApi;
 
   @Override
   public Mono<Amount> getAmountByCurrencyCode(String currencyCode) {
     return this.currenciesApi.getCurrencyByCode(currencyCode)
         .onErrorResume(error -> {
-          if (error instanceof WebClientResponseException ex && ex.getStatusCode() == HttpStatus.NOT_FOUND) {
+          if (error instanceof WebClientResponseException && ((WebClientResponseException) error).getStatusCode() == HttpStatus.NOT_FOUND) {
             throw new CurrencyNotFoundException(currencyCode);
           }
           throw new UnavailableCurrencyServiceException(error);

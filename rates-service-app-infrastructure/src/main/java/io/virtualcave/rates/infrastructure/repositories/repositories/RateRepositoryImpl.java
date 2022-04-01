@@ -1,6 +1,5 @@
 package io.virtualcave.rates.infrastructure.repositories.repositories;
 
-import io.virtualcave.rates.infrastructure.repositories.repositories.entitydb.RateEntity;
 import io.virtualcave.rates.infrastructure.repositories.repositories.entitydb.RateEntityMapper;
 import io.virtualcave.rates.infrastructure.repositories.repositories.entitydb.RateRepositoryR2dbc;
 import io.virtualcave.rates.model.Rate;
@@ -24,24 +23,25 @@ public class RateRepositoryImpl implements RateRepository {
   @Override
   public Mono<Rate> save(RateRequest rateData) {
     return rateRepositoryR2dbc.save(rateEntityMapper.asRateRequestToRateEntity(rateData))
-        .map(rateEntityMapper::asRateToRateEntity);
+        .map(rateEntityMapper::asRateFromRateEntity);
   }
 
   @Override
   public Mono<Rate> findById(String id) {
     return rateRepositoryR2dbc.findById(id)
-        .map(rateEntityMapper::asRateToRateEntity);
+        .map(rateEntityMapper::asRateFromRateEntity);
   }
 
   @Override
   public Mono<Rate> patch(Rate rate) {
-    return rateRepositoryR2dbc.save(rateEntityMapper.asRateToRateEntity(rate))
-        .map(rateEntityMapper::asRateToRateEntity);
+    return rateRepositoryR2dbc.save(rateEntityMapper.asRateEntityFromRate(rate))
+        .map(rateEntityMapper::asRateFromRateEntity);
   }
 
   @Override
   public Flux<Rate> findByProductAndBrandId(String productId, String brandId, LocalDate date) {
-    return null;
+    return rateRepositoryR2dbc.findByProductIdAndBrandIdAndStartDateAfter(productId, brandId, date)
+        .map(rateEntityMapper::asRateFromRateEntity);
   }
 
   @Override
